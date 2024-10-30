@@ -9,6 +9,6 @@ app.get('/', (req, res) => {
     );
 
     app.listen(PORT, () => {
-        console.log('servidor rodando em https://localhost:${PORT}');
+        console.log(`servidor rodando em https://localhost:${PORT}`);
 
     }); //API criação
