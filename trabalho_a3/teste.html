@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabalho API</title>
+</head>
+<body>
+    <h1>Trabalho API</h1>
+    <pre id="resultado"></pre> <!-- Elemento para mostrar os resultados -->
+
+    <script>
+        const loginUrl = 'http://137.184.108.252:5000/api/login';
+        const cidadesUrl = 'http://137.184.108.252:5000/api/cidades';
+
+        // Obtenção do Token:
+        async function obterToken() {
+            try {
+                const response = await fetch(loginUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'fernandodedeus525@gmail.com',
+                        password: 'wadWaEGS00o1' 
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro de autenticação: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.token; 
+            } catch (error) {
+                console.error('Erro ao obter token:', error);
+                document.getElementById('resultado').innerText = 'Erro ao obter token: ' + error;
+            }
+        }
+
+        // Obtenção das cidades:
+        async function obterCidades() {
+            const token = await obterToken(); 
+
+            if (!token) {
+                console.error('Token não disponível.');
+                return;
+            }
+
+            try {
+                const response = await fetch(cidadesUrl, {
+                    method: 'GET',
+                    headers: {
+                        'x-access-token': token
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro ao buscar cidades: ${response.status}`);
+                }
+
+                const cidades = await response.json();
+                console.log('Cidades:', cidades);
+                document.getElementById('resultado').innerText = JSON.stringify(cidades, null, 2);
+            } catch (error) {
+                console.error('Erro ao obter cidades:', error);
+                document.getElementById('resultado').innerText = 'Erro ao obter cidades: ' + error;
+            }
+        }
+
+        
+        obterCidades();
+    </script>
+</body>
+</html>
